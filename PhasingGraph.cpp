@@ -256,6 +256,9 @@ void VairiantGraph::edgeConnectResult(){
                 posPhasingResult->emplace(currPos, PhasingResult(currHP, blockStart));
             }
         }
+        if (variantIter->first == 26724510){
+            std::cout << "26724510: " << h1<<"\t"<<h2<<"\t"<<blockStart << std::endl;
+        }
 
         // Check if there is no edge from current node
         std::map<int,VariantEdge*>::iterator edgeIter = edgeList->find( currPos );
@@ -418,7 +421,7 @@ void VairiantGraph::addEdge(std::vector<ReadVariant> &in_readVariant){
         for( auto variant : (*readIter).variantVec ){
             readCount++;
             if( variant.quality <= UNDEFINED ){
-                (*variantPosType)[variant.position] = variant.quality;
+                // (*variantPosType)[variant.position] = variant.quality;
             }
             else{
                 (*variantPosType)[variant.position] = SNP_HET;
@@ -443,6 +446,9 @@ void VairiantGraph::addEdge(std::vector<ReadVariant> &in_readVariant){
 
             // add edge process
             for(int nextNode = 0 ; nextNode < params->connectAdjacent; nextNode++){
+                if (variant1Iter->quality == SNP_HOM){
+                    nextNode--;
+                }
                 // this allele support ref
                 if( variant1Iter->allele == 0 )
                     (*edgeList)[variant1Iter->position]->ref->addSubEdge((*variant1Iter), (*variant2Iter),readIter->first,params->baseQuality,params->edgeWeight);
@@ -623,7 +629,7 @@ void VairiantGraph::phasingProcess(PosPhasingResult &inPosPhasingResult){
 
     // This step will utilize the results of graph phasing to attempt to separate all the reads into two 
     // haplotypes and then identify high-confidence SNPs using reads from the two distinct haplotypes.
-    this->readCorrection();  
+    // this->readCorrection();  
 }
 
 Clip::Clip(std::string &chr, ClipCount &clipCount){
